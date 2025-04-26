@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS EAMCET 2025 College Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+        <h2 class="text-2xl font-bold text-center mb-6">TS EAMCET 2025 College Predictor</h2>
+        <form id="collegePredictorForm">
+            <div class="mb-4">
+                <label for="rank" class="block text-sm font-medium text-gray-700">Your TS EAMCET Rank</label>
+                <input type="number" id="rank" min="1" max="150000" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+            </div>
+            <div class="mb-4">
+                <label for="branch" class="block text-sm font-medium text-gray-700">Preferred Branch</label>
+                <select id="branch" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+                    <option value="CSE">Computer Science Engineering (CSE)</option>
+                    <option value="ECE">Electronics & Communication Engineering (ECE)</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                    <option value="IT">Information Technology (IT)</option>
+                    <option value="DS">Data Science</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700">Find Colleges</button>
+        </form>
+        <div id="result" class="mt-6 text-center" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('result').style.display = 'none';
+
+        document.getElementById('collegePredictorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const rank = parseInt(document.getElementById('rank').value);
+            const branch = document.getElementById('branch').value;
+
+            console.log('Rank:', rank, 'Branch:', branch);
+
+            if (isNaN(rank) || rank < 1 || rank > 150000) {
+                document.getElementById('result').innerHTML = '<p class="text-red-500">Please enter a valid rank between 1 and 150,000.</p>';
+                document.getElementById('result').style.display = 'block';
+                return;
+            }
+            if (!['CSE', 'ECE', 'CIVIL', 'IT', 'DS'].includes(branch)) {
+                document.getElementById('result').innerHTML = '<p class="text-red-500">Please select a valid branch.</p>';
+                document.getElementById('result').style.display = 'block';
+                return;
+            }
+
+            const colleges = {
+                'CSE': [
+                    { name: 'JNTUH College of Engineering, Hyderabad', opening_rank: 1, closing_rank: 1000 },
+                    { name: 'Chaitanya Bharathi Institute of Technology (CBIT)', opening_rank: 500, closing_rank: 2000 },
+                    { name: 'Vasavi College of Engineering', opening_rank: 800, closing_rank: 3000 },
+                    { name: 'Gokaraju Rangaraju Institute of Engineering and Technology', opening_rank: 1500, closing_rank: 5000 },
+                    { name: 'Sreenidhi Institute of Science and Technology', opening_rank: 2000, closing_rank: 6000 }
+                ],
+                'ECE': [
+                    { name: 'JNTUH College of Engineering, Hyderabad', opening_rank: 500, closing_rank: 1500 },
+                    { name: 'Chaitanya Bharathi Institute of Technology (CBIT)', opening_rank: 1000, closing_rank: 3500 },
+                    { name: 'Vasavi College of Engineering', opening_rank: 1200, closing_rank: 4000 },
+                    { name: 'Sreenidhi Institute of Science and Technology', opening_rank: 2000, closing_rank: 5500 }
+                ],
+                'CIVIL': [
+                    { name: 'JNTUH College of Engineering, Hyderabad', opening_rank: 1000, closing_rank: 3500 },
+                    { name: 'Chaitanya Bharathi Institute of Technology (CBIT)', opening_rank: 2000, closing_rank: 6000 },
+                    { name: 'MVSR Engineering College', opening_rank: 3000, closing_rank: 12000 },
+                    { name: 'Vardhaman College of Engineering', opening_rank: 4000, closing_rank: 15000 }
+                ],
+                'IT': [
+                    { name: 'JNTUH College of Engineering, Hyderabad', opening_rank: 300, closing_rank: 1200 },
+                    { name: 'Chaitanya Bharathi Institute of Technology (CBIT)', opening_rank: 800, closing_rank: 2500 },
+                    { name: 'Gokaraju Rangaraju Institute of Engineering and Technology', opening_rank: 1500, closing_rank: 5000 },
+                    { name: 'CMR College of Engineering and Technology', opening_rank: 2000, closing_rank: 7000 }
+                ],
+                'DS': [
+                    { name: 'JNTUH College of Engineering, Hyderabad', opening_rank: 200, closing_rank: 1000 },
+                    { name: 'Vasavi College of Engineering', opening_rank: 700, closing_rank: 2000 },
+                    { name: 'Sreenidhi Institute of Science and Technology', opening_rank: 1000, closing_rank: 4000 },
+                    { name: 'Malla Reddy College of Engineering and Technology', opening_rank: 2000, closing_rank: 8000 }
+                ]
+            };
+
+            const matchingColleges = colleges[branch].filter(college => 
+                rank >= college.opening_rank && rank <= college.closing_rank
+            ).map(college => `${college.name} (Opening Rank: ${college.opening_rank}, Closing Rank: ${college.closing_rank})`);
+
+            document.getElementById('result').innerHTML = '';
+            let result = `<p class="text-green-600">Your Rank: ${rank.toLocaleString()}</p>`;
+            if (matchingColleges.length === 0) {
+                result += `<p class="text-yellow-600">No colleges found for your rank and branch. Try a different branch or check official cutoffs.</p>`;
+            } else {
+                result += `<p class="text-blue-600">Colleges for ${branch} you may get admission to:</p><ul class="list-disc pl-5">`;
+                matchingColleges.forEach(college => {
+                    result += `<li>${college}</li>`;
+                });
+                result += `</ul>`;
+            }
+            document.getElementById('result').innerHTML = result;
+            document.getElementById('result').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
